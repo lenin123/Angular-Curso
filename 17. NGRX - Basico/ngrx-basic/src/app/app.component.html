@@ -7,7 +7,9 @@
       (deletarPessoa)="deletarPessoa($event)"></app-pessoa>
     </div>
     <div class="col-4 offset-md-6">
-      <button mat-fab color="primary" (click)="addNovaPessoa()">Nova Pessoa</button>
+      <button mat-fab color="primary" class="btn-nova-pessoa" (click)="addNovaPessoa()">
+        <mat-icon>person_add</mat-icon>
+      </button>
     </div>
   </div>
 </div>
