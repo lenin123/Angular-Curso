@@ -19,7 +19,7 @@ export class PessoaNova implements Action {
 
 export class PessoaAtualizar implements Action {
     readonly type = PessoaActionTypes.PESSOA_ATUALIZAR;
-    constructor(public payload: { pessoa: Pessoa }) {}
+    constructor(public payload: { id: string, changes: Partial<Pessoa> }) {}
 }
 
 export class PessoaDeletar implements Action {

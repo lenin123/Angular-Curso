@@ -1,8 +1,15 @@
 import * as fromPessoaActions from './pessoa.actions'
 import { Pessoa } from './../models/pessoa';
 import { Action } from '@ngrx/store';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
-export const initialState: Pessoa[] = [];
+export interface PessoasState extends EntityState<Pessoa> {}
+
+export const pessoaAdapter: EntityAdapter<Pessoa> = createEntityAdapter<Pessoa>({
+    selectId: (p: Pessoa) => p.id != undefined ? p.id : ''
+});
+
+export const initialState: PessoasState = pessoaAdapter.getInitialState({});
 
 export function reducer(state = initialState, action: Action){
     const pessoaAction = action as fromPessoaActions.PessoaActions; 
@@ -11,16 +18,11 @@ export function reducer(state = initialState, action: Action){
         case fromPessoaActions.PessoaActionTypes.PESSOAS_ALL:
             return state;
         case fromPessoaActions.PessoaActionTypes.PESSOA_NOVA:
-            return state.concat([pessoaAction.payload.pessoa]);
+            return pessoaAdapter.addOne(pessoaAction.payload.pessoa, state);
         case fromPessoaActions.PessoaActionTypes.PESSOA_ATUALIZAR:
-            let pessoa = state.slice();
-            let i = pessoa.findIndex(p => p.id == pessoaAction.payload.pessoa.id);
-            if(i >= 0){
-                pessoa[i] = pessoaAction.payload.pessoa;
-            }
-            return pessoa;                
+            return pessoaAdapter.updateOne({id: pessoaAction.payload.id, changes: pessoaAction.payload.changes}, state);
         case fromPessoaActions.PessoaActionTypes.PESSOA_DELETAR:
-            return state.filter(p => p.id != pessoaAction.payload.id);            
+            return pessoaAdapter.removeOne(pessoaAction.payload.id, state);
         default:
             return state;
     }
